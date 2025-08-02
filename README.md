@@ -327,7 +327,7 @@ void updatePitch(int16_t accel_deg, int16_t gyro_raw)
     pitch = ((gyro_pitch * alpha) + (accel_deg * (100 - alpha))) / 100;
 }
 ```
-##How to Use
+## How to Use
 1. Hardware Setup: Connect the ICM-20948 IMU to the I2C0 pins (PB2 for SCL and PB3 for SDA) of the TM4C123GH6PM. Connect the L298N motor driver to the PWM and GPIO pins as defined in main.c. Power the microcontroller and motor driver with the 4 AA battery pack.
 2. Software Setup:
 - Open the project in Code Composer Studio.
