@@ -28,7 +28,7 @@ This project is written in C and contains the following files:
 
 ## Key Functions
 # shell.c
-getsUart0
+```getsUart0```
 Gets a character from UART and uses ASCII values to ensure it meets the necessary inputs for the commands defined in main. In the while loop, the function ensures backspaces are ignored, recognizes when a space is entered and ends the string or if a carraige return is sent it ends the string and returns the function.
 ```
 void getsUart0(USER_DATA *data)
@@ -63,7 +63,7 @@ void getsUart0(USER_DATA *data)
     }
 }
 ```
-parseFields
+```parseFields```
 Using 3 sets of characters (alpha, numeric, and delimiter) the function assume the last character was a delimiters when searching the buffer and labels the field according to which character set it falls into, this is done until the end of the buffer string is found or until MAX_FIELDS are reached and returns.
 ```
 void parseFields(USER_DATA *data)
@@ -116,7 +116,7 @@ void parseFields(USER_DATA *data)
 
 }
 ```
-getFieldString
+```getFieldString```
 Returns the value of the field requested if the field number is in range otherwise returns NULL.
 ```
 char* getFieldString(USER_DATA *data, uint8_t fieldNumber)              //returns pointer to where string exist
@@ -189,8 +189,8 @@ bool isCommand(USER_DATA* data, const char strCommand[], uint8_t minArguments)
     return ret;
 }
 ```
-main.c
-initPWM
+# main.c
+```initPWM```
 This function initilizes the PWM signals for motor control and configures GPIO port C for PWM output and GPIO B and E for motor direction
 ```
 void initPWM()
@@ -219,8 +219,8 @@ void initPWM()
     PWM0_ENABLE_R = PWM_ENABLE_PWM6EN | PWM_ENABLE_PWM7EN;
 }
 ```
-Timer1A_ISR
-This is the interrupt service routine for Timer 1A. It reads the IMU data, calculates the pitch, and adjusts the motor speeds to maintain balance.
+```Timer1A_ISR```
+This is the interrupt service routine for Timer 1A where the IMU data is read to get the latest accelerometer and gyroscope data. The raw accelerometer data is used to calculate the current pitch angle of the robot. The calculated pitch is then fused with the gyroscope data using a complimentary filter which results is a more stable and accurate pitch reading. A PD controller is then implemented to calculate the necessary motor response using the current pitch angle and the rate of cahnge of the pitch angle.
 ```
 void Timer1A_ISR()                  //Left Wheel
 {
@@ -272,6 +272,43 @@ void Timer1A_ISR()                  //Left Wheel
         PWM0_3_CMPB_R = duty;
     }
 
+}
+```
+```computePitch```
+This function calculates the pitch angle in degrees based on the raw accelerometer data ```ax``` and ```az```). It approximates the tangent of the pitch angle and then converts it to degrees.
+```
+int16_t computePitch(int16_t ax, int16_t az)
+{
+    if(az == 0)
+    {
+        az = 1;
+    }
+    int32_t ratio = ((int32_t)ax * 1000)/az;    //Approximates tangent of pitch angle
+    if(ratio > 3000)
+    {
+        ratio = 3000;
+    }
+    else if(ratio < -3000)
+    {
+        ratio = -3000;
+    }
+    return (int16_t)((ratio * 57)/1000);        //converts radian to degrees
+}
+```
+```updatePitch```
+This function implements a complementary filter to combine the accelerometer-derived pitch with the gyroscope's angular velocity data. This provides a more stable and accurate estimate of the pitch angle. The filter gives more weight to the gyroscope data for short-term changes and uses the accelerometer data to correct for drift over the long term.
+```
+void updatePitch(int16_t accel_deg, int16_t gyro_raw)
+{
+    gyro_raw -= gyro_offset;
+    uint8_t alpha = 92;         //trust gyro 92%
+    uint16_t dt = 10;        //loop period 10ms
+    int16_t gyro_s = 65;   //ICM gyro LSB/deg/s    Page 11
+
+    int32_t gyro_scaled = ((int32_t)gyro_raw * 100) / gyro_s;   //converts to deg/s
+    int16_t delta = (gyro_scaled * dt) / 10;
+    int16_t gyro_pitch = pitch + delta;
+    pitch = ((gyro_pitch * alpha) + (accel_deg * (100 - alpha))) / 100;
 }
 ```
 ##How to Use
