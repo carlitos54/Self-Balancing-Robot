@@ -200,7 +200,7 @@ bool isCommand(USER_DATA* data, const char strCommand[], uint8_t minArguments)
     return ret;
 }
 ```
-# main.c
+## main.c
 
 ```initPWM```
 
