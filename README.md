@@ -18,22 +18,22 @@ This repository contains the code for a two-wheeled self-balancing robot based o
 
 ## Software
 This project is written in C and contains the following files:
--```c main.c ```: The main application file that initializes the hardware, implements the balancing algorithm, and handles user commands.
--```cshell.c```: Contains functions for parsing and interpreting commands received over UART.
--```cuart0.c / uart0.h```: Drivers for UART0 communication.
--```cclock.c / clock.h```: Clock configuration for the microcontroller.
--```cwait.c / wait.h```: Functions for creating delays.
--```ctm4c123gh6pm.h```: Header file with register definitions for the TM4C123GH6PM.
--```ctm4c123gh6pm_startup_ccs.c```: Startup file for Code Composer Studio.
+- ```c main.c ```: The main application file that initializes the hardware, implements the balancing algorithm, and handles user commands.
+- ```cshell.c```: Contains functions for parsing and interpreting commands received over UART.
+- ```cuart0.c / uart0.h```: Drivers for UART0 communication.
+- ```cclock.c / clock.h```: Clock configuration for the microcontroller.
+- ```cwait.c / wait.h```: Functions for creating delays.
+- ```ctm4c123gh6pm.h```: Header file with register definitions for the TM4C123GH6PM.
+- ```ctm4c123gh6pm_startup_ccs.c```: Startup file for Code Composer Studio.
 
 ## Key Functions
--```cinitUart0()```: Initializes the UART0 module for serial communication.
--```cinitPWM()```: Configures the PWM module for motor control.
--```cinitI2C0()```: Initializes the I2C0 module for communication with the IMU.
--```creadIMU()```: Reads accelerometer and gyroscope data from the ICM-20948.
--```ccomputePitch()```: Calculates the robot's pitch angle based on accelerometer data.
--```cupdatePitch()```: Fuses accelerometer and gyroscope data to get a more accurate pitch angle.
--```cTimer1A_ISR()```: The interrupt service routine for Timer 1A, which runs the balancing algorithm at regular intervals.
+- ```cinitUart0()```: Initializes the UART0 module for serial communication.
+- ```cinitPWM()```: Configures the PWM module for motor control.
+- ```cinitI2C0()```: Initializes the I2C0 module for communication with the IMU.
+- ```creadIMU()```: Reads accelerometer and gyroscope data from the ICM-20948.
+- ```ccomputePitch()```: Calculates the robot's pitch angle based on accelerometer data.
+- ```cupdatePitch()```: Fuses accelerometer and gyroscope data to get a more accurate pitch angle.
+- ```cTimer1A_ISR()```: The interrupt service routine for Timer 1A, which runs the balancing algorithm at regular intervals.
 
 ##How to Use
 1. Hardware Setup: Connect the ICM-20948 IMU to the I2C0 pins (PB2 for SCL and PB3 for SDA) of the TM4C123GH6PM. Connect the L298N motor driver to the PWM and GPIO pins as defined in main.c. Power the microcontroller and motor driver with the 4 AA battery pack.
