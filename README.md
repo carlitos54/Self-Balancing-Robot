@@ -37,7 +37,7 @@ This project is written in C and contains the following files:
 ```getsUart0```
 
 Gets a character from UART and uses ASCII values to ensure it meets the necessary inputs for the commands defined in main. In the while loop, the function ensures backspaces are ignored, recognizes when a space is entered and ends the string or if a carraige return is sent it ends the string and returns the function.
-```
+```c
 void getsUart0(USER_DATA *data)
 {
     int count = 0;
@@ -73,7 +73,7 @@ void getsUart0(USER_DATA *data)
 ```parseFields```
 
 Using 3 sets of characters (alpha, numeric, and delimiter) the function assume the last character was a delimiters when searching the buffer and labels the field according to which character set it falls into, this is done until the end of the buffer string is found or until MAX_FIELDS are reached and returns.
-```
+```c
 void parseFields(USER_DATA *data)
 {
     int counter = 0;
@@ -127,7 +127,7 @@ void parseFields(USER_DATA *data)
 ```getFieldString```
 
 Returns the value of the field requested if the field number is in range otherwise returns NULL.
-```
+```c
 char* getFieldString(USER_DATA *data, uint8_t fieldNumber)              //returns pointer to where string exist
 {
     char *ret;
@@ -148,7 +148,7 @@ char* getFieldString(USER_DATA *data, uint8_t fieldNumber)              //return
 ```getFieldInteger```
 
 Returns the integer value of the field if the field number is in range and the field type is numeric otherwise returns NULL
-```
+```c
 int32_t getFieldInteger(USER_DATA* data, uint8_t fieldNumber)
 {
 
@@ -170,7 +170,7 @@ int32_t getFieldInteger(USER_DATA* data, uint8_t fieldNumber)
 ```isCommand```
 
 This function returns true if the command matches the first field and the number of arguments is greater than or equal to the requested number of minimum arguments.
-```
+```c
 bool isCommand(USER_DATA* data, const char strCommand[], uint8_t minArguments)
 {
     bool ret = 0;
@@ -205,7 +205,7 @@ bool isCommand(USER_DATA* data, const char strCommand[], uint8_t minArguments)
 ```initPWM```
 
 This function initilizes the PWM signals for motor control and configures GPIO port C for PWM output and GPIO B and E for motor direction
-```
+```c
 void initPWM()
 {
     GPIO_PORTC_DEN_R |= ENA_MASK | ENB_MASK;
@@ -235,7 +235,7 @@ void initPWM()
 ```Timer1A_ISR```
 
 This is the interrupt service routine for Timer 1A where the IMU data is read to get the latest accelerometer and gyroscope data. The raw accelerometer data is used to calculate the current pitch angle of the robot. The calculated pitch is then fused with the gyroscope data using a complimentary filter which results is a more stable and accurate pitch reading. A PD controller is then implemented to calculate the necessary motor response using the current pitch angle and the rate of change of the pitch angle.
-```
+```c
 void Timer1A_ISR()                  //Left Wheel
 {
     TIMER1_ICR_R |= TIMER_ICR_TATOCINT;
@@ -291,7 +291,7 @@ void Timer1A_ISR()                  //Left Wheel
 ```computePitch```
 
 This function calculates the pitch angle in degrees based on the raw accelerometer data ```ax``` and ```az```). It approximates the tangent of the pitch angle and then converts it to degrees.
-```
+```c
 int16_t computePitch(int16_t ax, int16_t az)
 {
     if(az == 0)
@@ -313,7 +313,7 @@ int16_t computePitch(int16_t ax, int16_t az)
 ```updatePitch```
 
 This function implements a complementary filter to combine the accelerometer-derived pitch with the gyroscope's angular velocity data. This provides a more stable and accurate estimate of the pitch angle. The filter gives more weight to the gyroscope data for short-term changes and uses the accelerometer data to correct for drift over the long term.
-```
+```c
 void updatePitch(int16_t accel_deg, int16_t gyro_raw)
 {
     gyro_raw -= gyro_offset;
