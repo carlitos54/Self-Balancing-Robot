@@ -234,7 +234,7 @@ void initPWM()
 ```
 ```Timer1A_ISR```
 
-This is the interrupt service routine for Timer 1A where the IMU data is read to get the latest accelerometer and gyroscope data. The raw accelerometer data is used to calculate the current pitch angle of the robot. The calculated pitch is then fused with the gyroscope data using a complimentary filter which results is a more stable and accurate pitch reading. A PD controller is then implemented to calculate the necessary motor response using the current pitch angle and the rate of cahnge of the pitch angle.
+This is the interrupt service routine for Timer 1A where the IMU data is read to get the latest accelerometer and gyroscope data. The raw accelerometer data is used to calculate the current pitch angle of the robot. The calculated pitch is then fused with the gyroscope data using a complimentary filter which results is a more stable and accurate pitch reading. A PD controller is then implemented to calculate the necessary motor response using the current pitch angle and the rate of change of the pitch angle.
 ```
 void Timer1A_ISR()                  //Left Wheel
 {
